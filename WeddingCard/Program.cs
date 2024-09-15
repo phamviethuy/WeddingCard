@@ -2,11 +2,11 @@
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System.Drawing;
+using System.Drawing.Text;
 
 static Mat DrawTextOnImage(string inputImagePath, string text, Font font, Brush brush, RectangleF region)
 {
     using Bitmap image = new(inputImagePath);
-
 
     using (Graphics g = Graphics.FromImage(image))
     {
@@ -21,9 +21,25 @@ static Mat DrawTextOnImage(string inputImagePath, string text, Font font, Brush 
 
     return image.ToMat();
 }
-using var img = DrawTextOnImage("miu.jpg", "Anh Huy", new Font(FontFamily.Families[3], 20), new SolidBrush(Color.Red), new RectangleF(550, 375, 360, 30));
-using (new Window("dst image", img))
+PrivateFontCollection pfc = new PrivateFontCollection();
+//pfc.AddFontFile("Fonts/Playwrite_CU/PlaywriteCU-Regular.ttf");
+pfc.AddFontFile("GreatVibes-Regular.ttf");
+FontFamily fontFamily = pfc.Families[0];
+
+
+var guest = File.ReadAllLines("guest.txt");
+Directory.CreateDirectory("output");
+foreach (var name in guest)
 {
-    Cv2.WaitKey();
+    using var img = DrawTextOnImage("miu.jpg", name, new Font(fontFamily, 25), new SolidBrush(Color.BlueViolet), new RectangleF(550, 375, 360, 30));
+    img.ToBitmap().Save($"output/{name}.jpg");
 }
 
+
+var guest_huy = File.ReadAllLines("guest_huy.txt");
+Directory.CreateDirectory("huy");
+foreach (var name in guest_huy)
+{
+    using var img = DrawTextOnImage("huy.jpg", name, new Font(fontFamily, 25), new SolidBrush(Color.BlueViolet), new RectangleF(550, 375, 360, 30));
+    img.ToBitmap().Save($"huy/{name}.jpg");
+}
